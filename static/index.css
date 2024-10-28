@@ -1,0 +1,107 @@
+body {
+    font-family: 'Poppins', sans-serif;
+    background: radial-gradient(circle, #a1c4fd, #c2e9fb, #e0c3fc);
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.bg-container {
+    display: flex;
+}
+
+.main-heading {
+    text-align: center;
+    padding-top: 70px;
+    color: #000;
+}
+
+.head {
+    font-size: 16px;
+    padding-top: 20px;
+    color: rgb(105, 105, 105);
+}
+
+.main-paragraph {
+    text-align: center;
+    padding: 30px;
+    color: #878787;
+}
+
+.container {
+   
+    padding: 20px;
+    
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    height: auto; /* Allow height to adjust based on content */
+    border-radius: 8px;
+}
+
+/* Card Styles */
+.card {
+    border-radius: 15px; /* Rounded corners */
+    transition: transform 0.3s; /* Smooth scaling effect */
+}
+
+.card:hover {
+    transform: scale(1.05); /* Slightly enlarge the card on hover */
+}
+
+/* Individual Card Backgrounds */
+.notes-card {
+    background-color: #f9f9f9; /* Light background for notes card */
+    height: 200px;
+    width: 330px;
+
+}
+
+.image-card {
+    background-color: #e2f7e2; /* Light green background for image card */
+}
+
+.ocr-card {
+    background-color: #fce4ec; /* Light pink background for OCR card */
+}
+
+.chat-card {
+    background-color: #d1e7ff; /* Light blue background for chat card */
+    margin-left: 5px;
+    height: 200px;
+    width: 330px;
+}
+
+/* Text Styles */
+.card-title {
+    font-weight: bold; /* Bold title */
+}
+
+.card-text {
+    color: #555; /* Darker text for better readability */
+}
+
+/* Button styles */
+.btn-primary {
+    background-color: #007bff; /* Primary button color */
+}
+
+.btn-secondary {
+    background-color: #6c757d; /* Secondary button color */
+}
+
+/* Additional Styles for Upload Form and Progress Bar */
+.progress-container {
+    width: 100%;
+    height: 10px; /* Adjust size as needed */
+    background-color: #e0e0e0;
+    border-radius: 8px;
+    margin: 20px 0;
+}
+
+.progress-bar {
+    height: 100%;
+    width: 0;
+    background-color: #4caf50; /* Single color for the progress bar */
+    transition: width 0.3s;
+}

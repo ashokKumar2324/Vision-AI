@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analysis Results</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='sty.css') }}">
+</head>
+<body>
+    <div class="bg-container">
+        <div class="ai-logo">
+            <img id="programmingQueryLogo" src="https://res.cloudinary.com/dfalmhibb/image/upload/v1722057885/Exam-ai.png" alt="Ask Programming AI" onclick="window.location.href='/chat'">
+            <div id="aiMessageContainer" class="ai-message">
+                <p>For further Q & A ask the AI Assistant</p>
+                <i id="closeMessageIcon" class="fas fa-times-circle"></i>
+            </div>
+        </div>
+        <div class="container results-container">
+            <div class="d-flex flex-column">
+                <div class="file-info">
+                    <p class="p-info">{{ filename }}</p>
+                </div>
+                <div class="results">
+                    <h2>Extracted Content</h2>
+                    <!-- Initially disabled textarea -->
+                    <textarea id="extractedText" class="form-control" rows="20" disabled>{{ text }}</textarea>
+                    
+                    <!-- Buttons for edit and download -->
+                    <button id="editButton" class="btn btn-warning mt-3">Edit</button>
+                    <button id="downloadButton" class="btn btn-primary mt-3">Download as .txt</button>
+                </div>
+            </div>
+            
+            <div class="d-flex flex-column">
+                <div class="chat-info">
+                    <p class="p-info">Chat</p>
+                </div>    
+                <div class="gemini-ai">
+                    <button id="generateButton" class="btn btn-success">Generate Notes</button>
+                    <!-- Initially hidden highlights and summary -->
+                    <div id="geminiContainer" style="display: none;">
+                        <h2>Highlights of Uploaded File</h2>
+                        <div id="fileSummary"></div>
+                        <div id="geminiHighlights"></div>
+                    </div>
+                    <input type="text" id="queryInput" placeholder="Ask AI ..." class="form-control mt-3" />
+                    <button onclick="askGemini()" class="btn btn-secondary mt-2">Ask</button>
+                    <br><br>
+                </div>
+            </div>
+        </div>
+    </div>    
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const closeMessageIcon = document.getElementById('closeMessageIcon');
+        const aiMessageContainer = document.getElementById('aiMessageContainer');
+    
+        closeMessageIcon.addEventListener('click', function () {
+            aiMessageContainer.style.display = 'none';
+        });
+    
+        // Add event listener for the button to generate summary and highlights
+        const generateButton = document.getElementById('generateButton');
+        generateButton.addEventListener('click', function () {
+            const extractedText = document.getElementById('extractedText').value;
+            getGeminiAnalysis(extractedText);
+            document.getElementById('geminiContainer').style.display = 'block'; // Show the highlights and summary
+        });
+
+        // Toggle editing of the extracted text
+        const editButton = document.getElementById('editButton');
+        const extractedTextArea = document.getElementById('extractedText');
+
+        editButton.addEventListener('click', function () {
+            if (extractedTextArea.disabled) {
+                extractedTextArea.disabled = false;
+                editButton.innerText = 'Done';
+                editButton.classList.remove('btn-warning');
+                editButton.classList.add('btn-danger');
+            } else {
+                extractedTextArea.disabled = true;
+                editButton.innerText = 'Edit';
+                editButton.classList.remove('btn-danger');
+                editButton.classList.add('btn-warning');
+            }
+        });
+
+        // Download extracted content as a .txt file
+        const downloadButton = document.getElementById('downloadButton');
+        downloadButton.addEventListener('click', function () {
+            const content = document.getElementById('extractedText').value;
+            downloadTextFile(content, 'extracted_content.txt');
+        });
+    });
+
+    function getGeminiAnalysis(text) {
+        fetch('/gemini_analysis', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ text: text })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.summary) {
+                document.getElementById('fileSummary').innerHTML = formatSummary(data.summary);
+            } else {
+                showError('fileSummary', 'Unable to fetch summary.');
+            }
+            if (data.highlights) {
+                document.getElementById('geminiHighlights').innerHTML = formatHighlights(data.highlights);
+            } else {
+                showError('geminiHighlights', 'Unable to fetch highlights.');
+            }
+        })
+        .catch(error => handleError('fileSummary', 'geminiHighlights', error));
+    }
+    function askGemini() {
+        const query = document.getElementById('queryInput').value.trim();
+        if (query !== '') {
+            getGeminiAnalysis(query);
+        }
+    }
+     
+
+    function askProgrammingGemini() {
+        const query = document.getElementById('programmingQueryInput').value.trim();
+        if (query !== '') {
+            fetch('/gemini_programming_analysis', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ text: query })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.answer) {
+                    alert(data.answer);
+                } else {
+                    alert('Error: Unable to fetch the answer.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while fetching the answer.');
+            });
+        }
+    }
+
+    // Helper function to download text as a file
+    function downloadTextFile(content, filename) {
+        const element = document.createElement('a');
+        const file = new Blob([content], { type: 'text/plain' });
+        element.href = URL.createObjectURL(file);
+        element.download = filename;
+        document.body.appendChild(element); // Required for this to work in Firefox
+        element.click();
+        document.body.removeChild(element);
+    }
+    
+    function formatSummary(summary) {
+        return summary
+            .replace(/\*\*(.*?)\*\*/g, '<h3 class="highlighted-heading">$1</h3>')  // Format bold headings
+            .replace(/-\s(.*?):/g, '<h4 class="sub-heading">$1:</h4>')              // Format sub-headings
+            .replace(/^\*\s*(.*?)\s*\*$/gm, '<p class="highlighted-content">$1</p>') // Format highlighted content
+            .replace(/(\d+\.\s.*?)(?=<h4|$)/g, '<h5 class="main-heading">$1</h5>');  // Format numbered lists
+    }
+
+    function formatHighlights(highlights) {
+        return highlights
+            .replace(/^##\s*(.*?)$/gm, '<h3 class="highlighted-heading">$1</h3>')    // Format main headings
+            .replace(/\*\*(.*?)\*\*/g, '<strong class="bold-text">$1</strong>')      // Format bold text
+            .replace(/^\*\s(.*?):/gm, '<h4 class="sub-heading">$1:</h4>')           // Format sub-headings
+            .replace(/^\*\s(.*?)(?=\n|$)/gm, '<p class="highlighted-content">• $1</p>') // Format explanations with bullet points
+            .replace(/^(\d+\.\s.*?)(?=\n|$)/gm, '<h5 class="main-heading">$1</h5>')  // Format numbered lists
+            .replace(/^(?!<h|<p|<strong)(.*?)(?=\n|$)/gm, '<p>$1</p>');              // Add paragraphs for plain text
+    }
+
+    function handleError(summaryElement, highlightsElement, error) {
+        console.error('Error:', error);
+        showError(summaryElement, 'An error occurred while fetching the summary.');
+        showError(highlightsElement, 'An error occurred while fetching highlights.');
+    }
+
+    function showError(elementId, message) {
+        document.getElementById(elementId).innerHTML = `<p class="error-message">${message}</p>`;
+    }
+    </script>
+</body>
+</html>

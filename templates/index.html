@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Topper Friend</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='index.css') }}">
+</head>
+<body>
+    <div class="bg-container d-flex flex-column align-items-center">
+        <h1 class="main-heading">Intelligent Document Management with AI</h1>
+        <p class="main-paragraph">Discover power of AI and Revolutionize your workflow  with our all-in-one platform, featuring intelligent note-making, stunning image generation, intuitive search capabilities, and dynamic chart creation.</br> Designed to enhance your productivity and creativity.</p>
+        <div class="container mt-4">
+            <div class="row">
+
+                <!-- AI Notes Making Card -->
+                <div class="col-md-4 mb-4">
+                    <div class="card notes-card">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">AI Notes Making</h5>
+                            <p class="card-text">Extract text from documents and interact with it through AI.</p>
+                            <a href="/ai_notes" class="btn btn-primary">Start Making Notes</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Combined AI Image Generation and Search Engine Card -->
+                <div class="col-md-4 mb-4">
+                    <div class="card image-card">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">Search Engine & AI Image Generation</h5>
+                            <p class="card-text"> Search for images using keywords or Generate images from text prompts </p>
+                            <a href="/img_search" class="btn btn-primary">Search Image</a>
+                            <a href="/img_gen" class="btn btn-primary">Generate Image</a>
+
+                        </div>
+                    </div>
+                </div>
+
+                
+
+                <!-- Chat with EDITH AI Card -->
+                <div class="col-md-4 mb-4">
+                    <div class="card chat-card">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">Chat with MITRA AI</h5>
+                            <p class="card-text">Engage in a conversation with our intelligent assistant for instant answers and support.</p>
+                            <a href="/chat" class="btn btn-primary">Start Chat</a>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Generator</title>
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+2&family=Poppins:wght@300&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='gen.css') }}">
+</head>
+<body>
+    <h1 class="main-heading">ImGEN</h1>
+    <p class="main-paragraph">Turn words into visuals with an AI that brings ideas to life. Enter a phrase, and watch your imagination unfold instantly.</p>
+
+    <form method="POST" class="search-form">
+        <div class="input-container">
+            <label for="prompt" class="head">Enter your prompt:</label>
+            <input type="text" id="prompt" name="prompt" class="search-input" placeholder="e.g., a serene landscape" required>
+            <input type="submit" value="Generate" class="btn-primary">
+        </div>
+    </form>
+    
+    <div class="container" style="{% if generated_image_path %}display: block;{% else %}display: none;{% endif %};">
+        {% if prompt %}
+            <h2 class="sub-head">Generated Image for: "{{ prompt }}"</h2>
+            <img src="{{ generated_image_path }}" alt="Generated Image" class="image-card">
+        {% endif %}
+    </div>
+    
+</body>
+</html>

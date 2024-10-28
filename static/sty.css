@@ -1,0 +1,199 @@
+body {
+    font-family: 'Poppins', sans-serif;
+    background: radial-gradient(circle, #a1c4fd, #c2e9fb, #e0c3fc);
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.bg-container {
+    padding-top: 50px;
+}
+
+.ai-logo {
+    padding-top: 150px;
+    position: relative;
+    text-align: center;
+}
+
+#programmingQueryLogo {
+    width: 80px;
+    height: 80px;
+    cursor: pointer;
+    position: fixed; /* Fix the position */
+    top: 80px; /* Adjust this value to position the logo vertically */
+    right: 30px; /* Adjust this value to position the logo horizontally */
+    border-radius: 50%; /* Perfect circle */
+    background: #330000; /* Very dark red background color */
+    box-shadow: 0 0 140px rgba(51, 0, 0, 0.9); /* Very dark and intense red glow */
+    animation: glow 1.2s infinite ease-in-out; /* Continuous glowing effect */
+    z-index: 1000; /* Ensure it stays on top of other elements */
+}
+
+/* Keyframes for glowing effect */
+@keyframes glow {
+    0% {
+        box-shadow: 0 0 40px rgba(200, 16, 46, 0.6); /* Initial glow with good contrast */
+    }
+    50% {
+        box-shadow: 0 0 100px rgba(200, 16, 46, 1.0); /* Peak glow with high intensity */
+    }
+    100% {
+        box-shadow: 0 0 40px rgba(200, 16, 46, 0.6); /* Back to initial glow */
+    }
+}
+
+.ai-message {
+    position: absolute;
+    bottom: -40px; /* Adjust based on space needed */
+    left: 50%;
+    transform: translateX(-50%);
+    background: #fff; /* White background */
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 370px; /* Adjust based on message width */
+    height: 33px;
+    margin-left: 520px;
+    margin-bottom: 70px;
+}
+
+#closeMessageIcon {
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+.container {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    border: 2px #b0b0b0 dashed;
+    width: 1400px;
+    height: 700px;
+}
+
+.results-container {
+    display: flex;
+    justify-content: space-between;
+    width: 1400px;
+    margin-top: 50px;
+}
+
+.p-info {
+    font-size: 16px;
+    text-align: left;
+    color: #000;
+}
+
+.results, .gemini-ai {
+    width: 520px;
+    background: #dff1ff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    overflow-y: auto;
+    height: 700px;
+    text-align: left;
+    border: #b3daff;
+    color: #333333;
+}
+
+.results h2, .gemini-ai h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.results p, .gemini-ai div {
+    margin: 0;
+    padding: 0;
+}
+
+#queryInput {
+    width: 80%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+/* Styles for the highlights section */
+#geminiHighlights {
+    padding: 10px;
+    border-radius: 4px;
+    background: #fffffe; /* Light yellow background */
+    border: 1px solid #ffffff; /* Yellow border */
+    color: #333;
+    line-height: 1.6;
+}
+
+.highlighted-heading {
+    font-size: 1.8em;
+    color: #2c3e50; /* Dark blue */
+    margin-top: 20px;
+}
+
+.bold-text {
+    font-weight: bold;
+    
+}
+
+.sub-heading {
+    font-size: 1.5em;
+    color: #34495e; /* Dark gray */
+    margin-top: 15px;
+}
+
+.main-heading {
+    font-size: 1.2em;
+    color: #2980b9; /* Blue */
+    margin-top: 10px;
+}
+
+.highlighted-content {
+    font-size: 1em;
+    color: #27ae60; /* Green */
+    margin-left: 20px;
+}
+
+/* Styles for the file summary section */
+#fileSummary {
+    padding: 10px;
+    border-radius: 4px;
+    background: #ffebcc; /* Light peach background */
+    border: 1px solid #ffc266; /* Peach border */
+    color: #333;
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.summary-heading {
+    font-weight: bold;
+    font-size: 1.2em;
+    margin-bottom: 10px;
+}
+
+.summary-content {
+    font-size: 1em;
+    line-height: 1.4;
+}

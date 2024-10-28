@@ -1,0 +1,137 @@
+body {
+    font-family: 'Poppins', sans-serif;
+    background: radial-gradient(circle, #a1c4fd, #c2e9fb, #e0c3fc);
+    
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width: 100vw;
+    margin: 0;
+}
+
+.container {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    padding: 20px;
+    height: auto;
+    width: 800px;
+    margin-left: 350px;
+    margin-top: 50px;
+}
+
+.main-heading {
+    font-family: 'Baloo 2', sans-serif;
+    font-size: 3rem;
+    font-weight: 700;
+    color: #2C3E50;
+    padding-top: 10px;
+    padding-left: 10px;
+    text-align: center;
+}
+.main-paragraph {
+    text-align: center;
+    padding: 30px;
+    color: #878787;
+    font-family: 'Baloo 2', sans-serif;
+    font-size: 18px;
+    border-right: 2px solid; /* Cursor effect */
+    white-space: nowrap;
+    overflow: hidden;
+    animation: typing 4s steps(100, end) forwards, blink-caret 0.75s step-end infinite;
+}
+
+/* Ensure the paragraph remains visible */
+.container {
+    display: block;
+}
+
+/* Typing effect */
+@keyframes typing {
+    from { width: 0; }
+    to { width: 100%; }
+}
+
+/* Blinking caret effect */
+@keyframes blink-caret {
+    from, to { border-color: transparent; }
+    50% { border-color: transparent; } /* Adjusted to match the color of your text */
+}
+
+/* Keep the text visible after typing completes */
+.main-paragraph.typed-complete {
+    border-right: none;
+}
+
+
+
+.head {
+    font-size: 18px;
+    color: #555;
+    margin-bottom: 10px;
+}
+
+.search-form {
+    background-color: rgba(255, 255, 255, 0.8);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.input-container {
+    display: flex;
+    flex-direction: column; /* Stack elements vertically */
+    align-items: center;
+}
+
+.search-input {
+    flex: 1;
+    padding: 10px;
+    border: 2px solid #3498db;
+    border-radius: 5px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+    width: 100%;
+    margin-bottom: 10px; /* Space between input and button */
+}
+
+.search-input::placeholder {
+    color: #aaa; /* Placeholder color */
+}
+
+.search-input:focus {
+    border-color: #2ecc71; /* Change border color on focus */
+    outline: none; /* Remove default outline */
+}
+
+.btn-primary {
+    padding: 10px 20px;
+    background-color: #3498db;
+    border: none;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.btn-primary:hover {
+    background-color: #2980b9; /* Darker shade on hover */
+}
+
+.image-card {
+    width: 100%; /* Full width of its container */
+    height: auto; /* Maintain aspect ratio */
+    max-height: 500px; /* Increase max height to show larger images */
+    object-fit: contain; /* Ensure the entire image fits within the space */
+    margin-top: 20px; /* Space above the image */
+}
+
+.sub-head {
+    font-size: 20px;
+    color: #2C3E50; /* Consistent color with headings */
+    margin: 20px 0;
+    font-weight: bold;
+}

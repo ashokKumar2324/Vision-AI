@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Topper Friend</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Roboto&family=Oswald&family=Montserrat&family=Comic+Neue&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+2&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="bg-container d-flex flex-column ">
+            <h1 class="main-heading">DocuDive</h1>
+            <p class="main-paragraph">Welcome to our AI-powered tool that extracts text from PDFs and PNGs, highlights key content, and offers an intuitive Q&A feature for streamlined document management and insights.</p>
+            <div class="container">
+                <h2 class="head">Upload your pdf or Image</h2>
+                <form id="uploadForm" method="post" enctype="multipart/form-data" action="/upload">
+                    <div class="file-upload">
+                        <input type="file" id="fileInput" class="file-input" name="file">
+                        <label for="fileInput" class="file-label"><i class="fas fa-cloud-upload-alt"></i></label>
+                    </div>
+                    <p id="fileName"></p>
+                    <div class="button-container">
+                        <button class="button1" type="submit">Upload</button>
+                        <i class="fas fa-arrow-right fa-2x"></i>
+                        <button class="button2" type="button" onclick="analyzeFile()">Analyze</button>
+                    </div>
+                    <div class="progress-container" id="progressContainer">
+                        <div id="progressBar" class="progress-bar"></div>
+                    </div>
+                </form>
+                <div id="result"></div>
+                <div id="status"></div>
+            </div>
+    </div>    
+
+    <script>
+        document.getElementById('fileInput').addEventListener('change', function() {
+    var fileName = this.files[0].name;
+    document.getElementById('fileName').innerText = fileName;
+});
+
+document.getElementById('uploadForm').onsubmit = function(event) {
+    event.preventDefault();
+    document.getElementById('status').innerText = '';
+    document.getElementById('result').innerText = '';
+    var formData = new FormData(this);
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', '/upload', true);
+
+    var progressContainer = document.getElementById('progressContainer');
+    var progressBar = document.getElementById('progressBar');
+
+    xhr.upload.onprogress = function(event) {
+        if (event.lengthComputable) {
+            var percentComplete = (event.loaded / event.total) * 100;
+            progressBar.style.width = percentComplete + '%';
+            progressContainer.style.display = 'block'; // Show the progress bar
+        }
+    };
+    
+
+    xhr.onload = function() {
+        progressContainer.style.display = 'none'; // Hide the progress bar after upload
+        if (xhr.status === 200) {
+            var response = JSON.parse(xhr.responseText);
+            document.getElementById('status').innerText = response.message;
+        } else {
+            document.getElementById('status').innerText = 'Upload failed';
+        }
+        progressBar.style.width = '0%';
+    };
+
+    xhr.send(formData);
+};
+
+function analyzeFile() {
+    document.getElementById('status').innerText = 'Analyzing...';
+    document.getElementById('result').innerText = '';
+
+    fetch('/analyze', {
+        method: 'POST'
+    }).then(response => {
+        if (response.redirected) {
+            window.location.href = response.url;
+        } else {
+            return response.json();
+        }
+    }).then(data => {
+        if (data) {
+            document.getElementById('result').innerText = data.result;
+            document.getElementById('status').innerText = data.message;
+        }
+    }).catch(error => {
+        document.getElementById('status').innerText = 'Error during analysis';
+        console.error('Error:', error);
+    });
+}
+
+    </script>
+</body>
+</html>

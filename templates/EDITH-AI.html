@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EDITH AI</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='ai.css') }}">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #f8f9fa; /* Light gray background */
+        }
+
+        .container {
+            display: flex;
+            width: 90%;
+            max-width: 1200px; /* Limit maximum width */
+            background: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .search-history {
+            width: 250px; /* Fixed width for search history */
+            padding: 15px;
+            border-right: 1px solid #ddd;
+            background-color: #f7f7f7; /* Light background for search history */
+        }
+
+        .search-history h2 {
+            font-size: 20px;
+        }
+
+        #searchHistoryList {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        #searchHistoryList li {
+            padding: 5px;
+            cursor: pointer;
+        }
+
+        #searchHistoryList li:hover {
+            background-color: #e9ecef; /* Highlight on hover */
+        }
+
+        .chat-box {
+            flex-grow: 1; /* Allow chat box to take remaining space */
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-header {
+            background: #ffffff;
+            color: #000000;
+            padding: 15px;
+            border-radius: 8px 8px 0 0;
+            text-align: center;
+        }
+
+        .chat-content {
+            flex-grow: 1; /* Allow chat content to grow */
+            padding: 15px;
+            overflow-y: auto;
+        }
+
+        .chat-input-container {
+            display: flex;
+            align-items: center;
+            border-top: 1px solid #ddd;
+            padding: 10px;
+            background: #ffffff; /* White background for input area */
+        }
+
+        .chat-input {
+            flex-grow: 1; /* Allow input to take remaining space */
+            padding: 10px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+
+        #submitIcon {
+            font-size: 24px;
+            color: #007bff; /* Bootstrap primary color */
+            cursor: pointer;
+        }
+
+        #submitIcon:hover {
+            color: #0056b3; /* Darker shade on hover */
+        }
+        
+        .typing-indicator {
+            display: flex;
+            align-items: center;
+            margin-top: 10px;
+        }
+
+        .typing-indicator .dot {
+            height: 10px;
+            width: 10px;
+            margin-right: 3px; /* Space between dots */
+            border-radius: 50%;
+            background-color: #3498db; /* Blue color for dots */
+            animation: bounce 0.6s infinite alternate; /* Animation for dots */
+        }
+
+        @keyframes bounce {
+          from { transform: translateY(0); }
+          to { transform: translateY(-10px); }
+      }
+    </style>
+</head>
+<body>
+    
+    <div class="search-history">
+        <h1 class="head">M.I.T.R.A</h1>
+        <h2>Previous Searches</h2>
+        <button id="clearHistoryButton" class="btn btn-danger btn-sm mb-2">Clear History</button>
+        <ul id="searchHistoryList"></ul>
+    </div>
+    <div class="container chat-container">
+        
+        
+        <div class="chat-box">
+            <div class="chat-header">
+                <p>Master Intelligence for Tactical Research and Assistance</p>
+            </div>
+            <div id="programmingAnswer" class="chat-content"></div>
+            
+             <!-- Typing indicator -->
+             <div id="loadingIndicator" class="typing-indicator" style="display:none;">
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+             </div>
+
+             <!-- Chat input area -->
+             <div class="chat-input-container">
+                <input type="text" id="programmingQueryInput" class="chat-input" placeholder="Type your question..." />
+                <i class="fa-sharp fa-solid fa-arrow-up" id="submitIcon" onclick="askProgrammingGemini()"></i>
+             </div>
+         </div>
+     </div>
+
+     <!-- JavaScript code -->
+     <script>
+        function askProgrammingGemini() {
+            const query = document.getElementById('programmingQueryInput').value.trim();
+            if (query !== '') {
+                // Save the search query to local storage
+                saveSearch(query);
+                
+                document.getElementById('loadingIndicator').style.display = 'flex';
+                document.getElementById('programmingAnswer').innerHTML = ''; // Clear previous answers
+                
+                fetch('/gemini_programming_analysis', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ prompt: query }) // Send the correct prompt key
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.response) { // Use 'data.response' instead of 'data.answer'
+                        document.getElementById('loadingIndicator').style.display = 'none';
+                        displayAnswerLineByLine(data.response);
+                    } else {
+                        document.getElementById('programmingAnswer').innerHTML = 'Error: Unable to fetch the answer.';
+                        document.getElementById('loadingIndicator').style.display = 'none';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    document.getElementById('programmingAnswer').innerHTML = 'An error occurred while fetching the answer.';
+                    document.getElementById('loadingIndicator').style.display = 'none';
+                });
+            }
+        }
+        
+     
+         document.getElementById('programmingQueryInput').addEventListener('keydown', function(event) {
+             if (event.key === 'Enter') {
+                 event.preventDefault();
+                 askProgrammingGemini();
+             }
+         });
+     
+         function displayAnswerLineByLine(answer) {
+             const lines = answer.split('\n');
+             let index = 0;
+
+             function displayNextLine() {
+                 if (index < lines.length) {
+                     const formattedLine = formatAnswer(lines[index]);
+                     document.getElementById('programmingAnswer').innerHTML += `<p>${formattedLine}</p>`;
+                     index++;
+                     setTimeout(displayNextLine, 500); // Adjust timing as needed
+                 }
+             }
+
+             displayNextLine();
+         }
+     
+         function formatAnswer(answer) {
+             return answer
+                 .replace(/^##\s*(.*?)$/gm, '<h3 class="highlighted-heading">$1</h3>')
+                 .replace(/\*\*(.*?)\*\*/g, '<strong class="bold-text">$1</strong>') 
+                 .replace(/^\*\s(.*?):/gm, '<h4 class="sub-heading">$1:</h4>') 
+                 .replace(/^\*\s(.*?)(?=\n|$)/gm, '<p class="highlighted-content">• $1</p>') 
+                 .replace(/^(\d+\.\s.*?)(?=\n|$)/gm, '<h5 class="main-heading">$1</h5>')
+                 .replace(/^(?!<h|<p|<strong)(.*?)(?=\n|$)/gm, '<p>$1</p>');
+         }
+     
+         function saveSearch(query) {
+             let searches = JSON.parse(localStorage.getItem('searchHistory')) || [];
+             
+             // Avoid duplicates
+             if (!searches.includes(query)) {
+                 searches.push(query);
+                 
+                 // Limit number of stored searches (e.g., last 10)
+                 if (searches.length > 10) {
+                     searches.shift(); // Remove the oldest search
+                 }
+                 
+                 localStorage.setItem('searchHistory', JSON.stringify(searches));
+                 
+                 displaySearchHistory();
+             }
+         }
+     
+         function displaySearchHistory() {
+             const historyList = document.getElementById('searchHistoryList');
+             historyList.innerHTML = ''; // Clear existing list
+             
+             const searches = JSON.parse(localStorage.getItem('searchHistory')) || [];
+             
+             searches.forEach(search => {
+                 const li = document.createElement('li');
+                 li.textContent = search;
+
+                 // Add click event to load the search into input
+                 li.onclick = function() {
+                     document.getElementById('programmingQueryInput').value = search;
+                     askProgrammingGemini(); // Optionally, trigger search
+                 };
+                 
+                 historyList.appendChild(li);
+             });
+         }
+         // Function to clear search history
+        function clearSearchHistory() {
+            localStorage.removeItem('searchHistory'); // Clear from local storage
+            displaySearchHistory(); // Refresh displayed list
+        }
+
+// Add event listener to clear history button
+document.getElementById('clearHistoryButton').addEventListener('click', clearSearchHistory);
+     
+         // Load search history on page load
+         window.onload = function() {
+             displaySearchHistory();
+         };
+     </script>
+</body>
+</html>

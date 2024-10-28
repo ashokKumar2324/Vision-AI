@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Topper Friend</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="bg-container d-flex flex-column ">
+        <h1 class="main-heading">Intelligent Text Extraction and Interactive AI Analysis</h1>
+
+        <!-- AI Image Generation Section -->
+        <div class="container">
+            <h2>AI Image Generation</h2>
+            <input type="text" id="imagePrompt" placeholder="Enter prompt for image generation">
+            <button onclick="generateImage()">Generate Image</button>
+            <div id="generatedImage"></div>
+        </div>
+
+        <!-- Image Search Engine Section -->
+        <div class="container">
+            <h2>Image Search Engine</h2>
+            <input type="text" id="searchQuery" placeholder="Search for images">
+            <button onclick="searchImages()">Search</button>
+            <div id="searchResults"></div>
+        </div>
+
+        <!-- Upload Section -->
+        <div class="container">
+            <h2>Upload your PDF or Image</h2>
+            <form id="uploadForm" method="post" enctype="multipart/form-data" action="/upload">
+                <input type="file" id="fileInput" name="file">
+                <button type="submit">Upload</button>
+                <button type="button" onclick="analyzeFile()">Analyze</button>
+            </form>
+            <div id="status"></div>
+        </div>
+
+        <!-- OCR Section -->
+        <div class="container">
+            <h2>OCR Functionality</h2>
+            <input type="file" id="ocrFileInput" name="ocrFile">
+            <button onclick="performOCR()">Convert Handwritten Note to Text</button>
+            <div id="ocrResult"></div>
+        </div>
+
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script>
+        function generateImage() {
+            const prompt = document.getElementById('imagePrompt').value;
+            // Call your image generation API here
+        }
+
+        function searchImages() {
+            const query = document.getElementById('searchQuery').value;
+            // Call your image search API here
+        }
+
+        function performOCR() {
+            const fileInput = document.getElementById('ocrFileInput');
+            const file = fileInput.files[0];
+            // Call your OCR API here
+        }
+
+        function analyzeFile() {
+            // Existing analyze file logic
+        }
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,155 @@
+<!DOCTYPE html> 
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Search Engine</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Fredericka+the+Great&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bungee&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+2&display=swap" rel="stylesheet">
+
+
+    <link href="https://fonts.googleapis.com/css2?family=Cuprum:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='img.css') }}">
+</head>
+<body>
+    <div class="d-flex flex-column">
+        <h1 class="main-heading">ImaGenie</h1>
+        <p class="tagline">Easily explore and acquire stunning images of the highest quality, transforming your ideas into reality with a smooth search experience!</p>
+        <form method="POST" action="{{ url_for('img_search') }}" class="search-form">
+            <div class="input-container">
+                <input type="text" id="prompt" name="prompt" required placeholder="Search for images..." class="search-input">
+                <button type="submit" class="btn-primary">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </button>
+            </div>
+        </form>
+
+        <div class="container" style="{% if image_paths %}display: block;{% else %}display: none;{% endif %};">
+            <div>
+                {% if image_paths %}
+                <div class="header-container">
+                    <h2 class="sub-head">
+                        <i class="fa-solid fa-image animated-icon"></i> Explore: {{ prompt }}
+                    </h2>
+                </div>
+                <div class="image-grid" id="image-grid">
+                    {% for image_path in image_paths %}
+                        <div class="image-card">
+                            <img src="{{ url_for('download_file', filename=image_path.split('/')[-1]) }}" alt="Search Result">
+                            
+                        </div>
+                    {% endfor %}
+                </div>
+
+                
+
+                {% endif %}
+
+                {% if prompt %}
+                    <form method="POST" action="{{ url_for('img_search') }}" id="load-more-form">
+                        <input type="hidden" name="prompt" value="{{ prompt }}">
+                        <input type="hidden" name="start" value="{{ start }}">
+                        <button type="submit" class="btn-secondary">Load More</button>
+                    </form>
+                {% endif %}
+            </div>
+        </div>
+
+        <div id="loader" class="loader" style="display: none;"></div>
+    </div>    
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const loadMoreForm = document.getElementById('load-more-form');
+            
+            if (loadMoreForm) {
+                loadMoreForm.addEventListener('submit', async function(event) {
+                    event.preventDefault(); // Prevent default form submission
+                    
+                    document.getElementById('loader').style.display = 'block';  // Show loader
+    
+                    const formData = new FormData(this);
+                    try {
+                        const response = await fetch(this.action, {
+                            method: 'POST',
+                            body: formData,
+                        });
+    
+                        const html = await response.text();
+                        const parser = new DOMParser();
+                        const doc = parser.parseFromString(html, 'text/html');
+    
+                        // Fetch new image cards from the parsed HTML and append to the grid
+                        const newImages = doc.querySelectorAll('#image-grid .image-card');
+                        const imageGrid = document.getElementById('image-grid');
+                        
+                        newImages.forEach(image => {
+                            imageGrid.appendChild(image);  // Append new images to the grid
+                        });
+    
+                    } catch (error) {
+                        console.error('Error loading more images:', error);
+                    } finally {
+                        document.getElementById('loader').style.display = 'none';  // Hide loader
+                    }
+                });
+            }
+    
+            // Display loader while fetching images
+            const form = document.querySelector('form');
+            form.addEventListener('submit', function() {
+                document.getElementById('loader').style.display = 'block';
+            });
+        });
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            // Typing effect for the main text element
+            const textElement = document.getElementById('animated-text');
+            const text = textElement.innerHTML;
+            textElement.innerHTML = ''; // Clear the text initially
+            let index = 0;
+        
+            function typeLetterByLetter() {
+                if (index < text.length) {
+                    textElement.innerHTML += text.charAt(index);
+                    index++;
+                    setTimeout(typeLetterByLetter, 50); // Speed control (50ms delay between letters)
+                } else {
+                    // After typing completes, remove the blinking cursor
+                    textElement.classList.add('typed-complete');
+                }
+            }
+            typeLetterByLetter();
+        
+            // Typing effect for the tagline element
+            const taglineElement = document.querySelector('.tagline');
+            taglineElement.classList.remove('typed-complete'); // Ensure animation starts fresh
+        
+            let width = 0; // Width for the tagline typing animation
+        
+            function typeTagline() {
+                taglineElement.style.width = width + '%';
+                width++;
+                if (width <= 100) {
+                    setTimeout(typeTagline, 40); // Adjust speed of typing
+                } else {
+                    taglineElement.classList.add('typed-complete'); // Add class to stop blinking
+                    taglineElement.style.borderRight = 'none'; // Remove blinking cursor effect
+                }
+            }
+        
+            // Trigger typing effect for the tagline after page load
+            typeTagline();
+        });
+        
+             
+    
+    </script>
+</body>
+</html>
